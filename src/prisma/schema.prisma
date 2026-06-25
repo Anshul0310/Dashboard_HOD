@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Note: SQLite doesn't support enums natively.
+// Role is stored as a String field with validation in application code.
+// Valid values: "MANAGEMENT", "FACULTY", "HOD"
+
+model User {
+  id                     String                  @id @default(uuid())
+  email                  String                  @unique
+  passwordHash           String
+  name                   String
+  role                   String                  @default("FACULTY")
+  department             String
+  createdAt              DateTime                @default(now())
+  courses                Course[]
+  progresses             WeeklyProgress[]
+  certificates           Certification[]
+  submissions            DynamicFormSubmission[]
+  kpiSubmissions         KpiSubmission[]
+  facultyKpiSubmissions  FacultyKpiSubmission[]  @relation("FacultyKpiSubmitter")
+  reviewedSubmissions    FacultyKpiSubmission[]  @relation("FacultyKpiReviewer")
+}
+
+model KpiSubmission {
+  id              String   @id @default(uuid())
+  periodId        String   // e.g. "2026-06"
+  department      String
+  data            String   // JSON string — Full 15-section KPI data
+  sectionStatuses String   // JSON string — Record<SectionKey, SectionStatus>
+  submittedById   String
+  submittedBy     User     @relation(fields: [submittedById], references: [id])
+  submittedAt     DateTime?
+  lastUpdated     DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@unique([periodId, department])
+}
+
+// Individual faculty KPI submissions — reviewed/approved by HOD
+// Status flow: DRAFT → SUBMITTED → APPROVED | REJECTED
+model FacultyKpiSubmission {
+  id            String    @id @default(uuid())
+  periodId      String    // e.g. "2026-06"
+  department    String
+  facultyId     String
+  faculty       User      @relation("FacultyKpiSubmitter", fields: [facultyId], references: [id])
+  data          String    // JSON string — personal KPI data (same 15 sections)
+  status        String    @default("DRAFT") // DRAFT | SUBMITTED | APPROVED | REJECTED
+  reviewedById  String?
+  reviewedBy    User?     @relation("FacultyKpiReviewer", fields: [reviewedById], references: [id])
+  reviewNote    String?   // HOD feedback
+  submittedAt   DateTime?
+  reviewedAt    DateTime?
+  lastUpdated   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+
+  @@unique([periodId, facultyId])
+}
+
+model Course {
+  id         String           @id @default(uuid())
+  courseCode String           @unique
+  name       String
+  facultyId  String
+  faculty    User             @relation(fields: [facultyId], references: [id])
+  progresses WeeklyProgress[]
+}
+
+model WeeklyProgress {
+  id                  String   @id @default(uuid())
+  courseId             String
+  facultyId            String
+  weekStartDate       DateTime
+  percentageCompleted Float
+  isLocked            Boolean  @default(false)
+  additionalMetrics   String?  // JSON string
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  course              Course   @relation(fields: [courseId], references: [id])
+  faculty             User     @relation(fields: [facultyId], references: [id])
+}
+
+model Certification {
+  id          String   @id @default(uuid())
+  facultyId   String
+  title       String
+  documentUrl String
+  createdAt   DateTime @default(now())
+  faculty     User     @relation(fields: [facultyId], references: [id])
+}
+
+model DynamicFormTemplate {
+  id          String                  @id @default(uuid())
+  title       String
+  schema      String                  // JSON string
+  createdBy   String
+  isActive    Boolean                 @default(true)
+  createdAt   DateTime                @default(now())
+  submissions DynamicFormSubmission[]
+}
+
+model DynamicFormSubmission {
+  id             String              @id @default(uuid())
+  formTemplateId String
+  facultyId      String
+  data           String              // JSON string
+  submittedAt    DateTime            @default(now())
+  template       DynamicFormTemplate @relation(fields: [formTemplateId], references: [id])
+  faculty        User                @relation(fields: [facultyId], references: [id])
+
+  @@unique([formTemplateId, facultyId])
+}
