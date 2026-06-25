@@ -8,9 +8,6 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
-  Send,
-  AlertTriangle,
-  Eye,
   Zap,
   ExternalLink,
   FileUp,
@@ -27,7 +24,7 @@ import {
 } from '../lib/api';
 import { sectionSchemas } from '../lib/sectionSchema';
 import { facultySectionSchemas } from '../lib/facultySchema';
-import type { SectionKey, SectionStatus } from '../lib/types';
+
 
 type ReviewFilter = 'all' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'DRAFT';
 

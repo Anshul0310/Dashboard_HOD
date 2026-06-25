@@ -16,7 +16,7 @@ interface KpiReportEmbedProps {
  * URLs (requires Power BI sign-in in the browser). Includes loading
  * indicator, error recovery, and fullscreen toggle.
  */
-export function KpiReportEmbed({ periodId, className, minHeight = 540 }: KpiReportEmbedProps) {
+export function KpiReportEmbed({ periodId: _periodId, className, minHeight = 540 }: KpiReportEmbedProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);

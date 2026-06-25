@@ -8,7 +8,6 @@ import {
   Download,
   Send,
   Edit3,
-  Wifi,
   WifiOff,
   Loader2,
   Cloud,

@@ -19,8 +19,6 @@ import {
   getStoredToken,
   getStoredUser,
   clearStoredToken,
-  setStoredToken,
-  setStoredUser,
   type StoredUser,
   type ApiError,
 } from './api';
@@ -95,7 +93,7 @@ function mapRole(backendRole: string): UserRole {
   }
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   role: null,
   token: null,
   user: null,
@@ -299,7 +297,7 @@ export const useKpiStore = create<KpiState>((set, get) => ({
         for (const apiSub of apiSubmissions) {
           submissionsMap[apiSub.periodId] = {
             periodId: apiSub.periodId,
-            data: apiSub.data as KpiData,
+            data: apiSub.data as unknown as KpiData,
             sectionStatuses: apiSub.sectionStatuses as Record<SectionKey, SectionStatus>,
             lastUpdated: apiSub.lastUpdated,
             submittedAt: apiSub.submittedAt || undefined,

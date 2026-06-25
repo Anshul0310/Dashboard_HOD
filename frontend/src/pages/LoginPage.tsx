@@ -9,7 +9,7 @@ type LoginMode = 'select' | 'credentials';
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const setRole = useAuthStore((s) => s.setRole);
+  // setRole not used
   const loginWithCredentials = useAuthStore((s) => s.loginWithCredentials);
   const loginAsDemo = useAuthStore((s) => s.loginAsDemo);
   const checkApiHealth = useAuthStore((s) => s.checkApiHealth);

@@ -36,7 +36,7 @@ type FacultySubmissionStatus = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' |
 
 export function FacultyKpiEntryPage() {
   const currentPeriodId = useKpiStore((s) => s.currentPeriodId);
-  const user = useAuthStore((s) => s.user);
+  // user not needed here
 
   const [formData, setFormData] = useState<Record<string, Record<string, unknown>>>({ ...emptyFacultyData });
   const [sectionStatuses, setSectionStatuses] = useState<Record<FacultySectionKey, SectionStatus>>({
