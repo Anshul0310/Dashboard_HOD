@@ -15,7 +15,7 @@ import {
 import { KpiCard } from '../components/ui/KpiCard';
 import { StatusChip } from '../components/ui/StatusChip';
 import { FilterRail } from '../components/ui/FilterRail';
-import { useKpiStore, useAuthStore } from '../lib/store';
+import { useKpiStore } from '../lib/store';
 import { getSectionCompletionStats } from '../lib/utils';
 import type { SectionStatus } from '../lib/types';
 import {
