@@ -1,13 +1,3 @@
 {
-  "outputDirectory": "frontend/dist",
-  "crons": [
-    {
-      "path": "/api/cron/friday-reminder",
-      "schedule": "0 15 * * 5"
-    },
-    {
-      "path": "/api/cron/sunday-lock",
-      "schedule": "59 23 * * 0"
-    }
-  ]
+  "outputDirectory": "dist"
 }
