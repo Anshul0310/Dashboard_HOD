@@ -2,11 +2,14 @@
   "name": "faculty-management-dashboard",
   "version": "1.0.0",
   "description": "Production-ready backend for Faculty Management Dashboard",
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "npm run prisma:generate && cd frontend && npm install && npm run build",
-    "build:backend": "tsc",
+    "build:backend": "npm install && npx prisma generate && tsc",
     "start": "node dist/server.js",
     "install:all": "npm install && cd frontend && npm install",
     "prisma:generate": "prisma generate --schema=src/prisma/schema.prisma",
@@ -34,7 +37,7 @@
     "@types/node": "^22.10.5",
     "@types/node-cron": "^3.0.11",
     "@types/streamifier": "^0.1.2",
-    "prisma": "^6.9.0",
+    "prisma": "^6.19.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
   }
