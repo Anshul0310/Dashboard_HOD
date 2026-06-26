@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../lib/store';
-import { useDeptStore, departments } from '../lib/store';
-import { GraduationCap, Shield, BarChart2, ChevronDown, Building2, Mail, Lock, Loader2, Wifi, WifiOff, Users } from 'lucide-react';
-import type { UserRole } from '../lib/types';
+import { GraduationCap, Mail, Lock, Loader2, Wifi, WifiOff } from 'lucide-react';
 
 
 
@@ -16,8 +14,6 @@ export function LoginPage() {
   const isLoading = useAuthStore((s) => s.isLoading);
   const loginError = useAuthStore((s) => s.loginError);
   const role = useAuthStore((s) => s.role);
-  const setDept = useDeptStore((s) => s.setDept);
-  const selectedDeptId = useDeptStore((s) => s.selectedDeptId);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,7 +34,7 @@ export function LoginPage() {
   // Check API health on mount
   useEffect(() => {
     (async () => {
-      const available = await checkApiHealth();
+      await checkApiHealth();
       setCheckingApi(false);
 
     })();
