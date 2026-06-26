@@ -21,6 +21,7 @@ import { getSectionCompletionStats } from '../lib/utils';
 import { sectionSchemas } from '../lib/sectionSchema';
 import type { SectionKey } from '../lib/types';
 import * as LucideIcons from 'lucide-react';
+import { generateTemplateCsv, parseKpiCsv } from '../lib/csvUtils';
 
 export function KpiEntryPage() {
   const currentPeriodId = useKpiStore((s) => s.currentPeriodId);
@@ -35,6 +36,7 @@ export function KpiEntryPage() {
   const user = useAuthStore((s) => s.user);
   const selectedDeptId = useDeptStore((s) => s.selectedDeptId);
   const syncSubmissionToApi = useKpiStore((s) => s.syncSubmissionToApi);
+  const saveSectionToApi = useKpiStore((s) => s.saveSectionToApi);
   const isSyncing = useKpiStore((s) => s.isSyncing);
   const department = user?.department || selectedDeptId;
   const activeSchema = activeSection
@@ -51,13 +53,53 @@ export function KpiEntryPage() {
   };
 
   const handleDownloadTemplate = () => {
-    setShowToast('Download will be available once connected to backend.');
+    const csv = generateTemplateCsv();
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `KPI_Template_${currentPeriodId}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setShowToast('Template downloaded successfully.');
     setTimeout(() => setShowToast(null), 3000);
   };
 
   const handleUpload = () => {
-    setShowToast('Upload will be available once connected to backend.');
-    setTimeout(() => setShowToast(null), 3000);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const text = event.target?.result as string;
+          const data = parseKpiCsv(text);
+          
+          let sectionsCount = 0;
+          for (const [sectionKey, values] of Object.entries(data)) {
+            if (isApiAvailable && user) {
+               await saveSectionToApi(currentPeriodId, sectionKey as SectionKey, values, department);
+            } else {
+               useKpiStore.getState().saveSection(currentPeriodId, sectionKey as SectionKey, values);
+            }
+            sectionsCount++;
+          }
+          
+          setShowToast(`Successfully loaded ${sectionsCount} sections from CSV.`);
+          setTimeout(() => setShowToast(null), 3000);
+        } catch (err) {
+          setShowToast('Failed to parse CSV file.');
+          setTimeout(() => setShowToast(null), 3000);
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
   };
 
   return (
@@ -94,10 +136,10 @@ export function KpiEntryPage() {
           </>
         ) : (
           <>
-            <WifiOff size={16} style={{ color: '#d97706' }} />
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#92400e' }}>Offline / Demo Mode</span>
-            <span style={{ fontSize: '0.78rem', color: '#d97706' }}>·</span>
-            <span style={{ fontSize: '0.78rem', color: '#92400e' }}>Data saved locally only. Sign in to sync to server.</span>
+            <WifiOff size={16} style={{ color: '#dc2626' }} />
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#991b1b' }}>Disconnected</span>
+            <span style={{ fontSize: '0.78rem', color: '#ef4444' }}>·</span>
+            <span style={{ fontSize: '0.78rem', color: '#991b1b' }}>Cannot reach the server. Please check your connection.</span>
           </>
         )}
       </div>

@@ -8,7 +8,23 @@ import type {
   Notification,
   KpiPeriod,
 } from './types';
-import { initialSubmissions, initialNotifications, periods as mockPeriods, emptyKpiData } from './mockData';
+export const emptyKpiData: KpiData = {
+  faculty: { profCount: 0, assocProfCount: 0, asstProfCount: 0, resignedLastMonth: 0, studentFacultyRatio: '' },
+  lms: { lessonPlansNotInLms: 0, facultyNamesNotInLms: [], facultyLessThan5Items: 0 },
+  latePunchIn: { latePunchInsLastMonth: 0 },
+  facultyPublications: { q1Publications: 0, q2Publications: 0, otherApprovedJournals: 0, conferencePapers: 0, q1UnderPreparation: 0, q2UnderPreparation: 0, journalUnderPreparation: 0, facultyNilPublications: 0 },
+  studentPublications: { q1Publications: 0, q2Publications: 0, otherApprovedJournals: 0, conferencePapers: 0, q1UnderPreparation: 0, q2UnderPreparation: 0, journalUnderPreparation: 0, projectsWithoutPublications: 0 },
+  fundedProjects: { projectsUnderExecution: 0, proposalsUnderPreparation: 0 },
+  phdGuideship: { eligibleNotRegistered: 0, namesEligibleNotRegistered: [], registeredGuides: 0, guidesWithNilStudents: 0 },
+  mous: { activeMous: 0, mou1Activity: '', mou2Activity: '', mou3Activity: '', mouSummaries: [] },
+  fdp: { facultyWithFdp: 0, facultyNilFdp: 0, totalFdpHours: 0 },
+  placement: { totalWithOffers: 0, totalWithoutOffers: 0, ctcAbove20L: 0, ctc10to20L: 0, ctc6to10L: 0, ctcBelow6L: 0 },
+  awardsFaculty: { totalAwards: 0 },
+  awardsStudents: { academicHackathonAwards: 0, sportsMusicAwards: 0 },
+  consultancy: { consultanciesUnderExecution: 0, newConsultanciesThisMonth: 0 },
+  partialDelivery: { subjectsWithPd: 0, totalPdHours: 0, expertsEngaging: 0 },
+  patentsIpr: { patentsFiled: 0, patentsPublished: 0, patentsGranted: 0 },
+};
 import {
   login as apiLogin,
   checkHealth,
@@ -187,9 +203,9 @@ interface KpiState {
 }
 
 export const useKpiStore = create<KpiState>((set, get) => ({
-  currentPeriodId: '2026-06',
-  periods: mockPeriods,
-  submissions: { ...initialSubmissions },
+  currentPeriodId: '',
+  periods: [],
+  submissions: {},
   isSyncing: false,
   syncError: null,
 
@@ -361,8 +377,8 @@ interface NotificationState {
 }
 
 export const useNotificationStore = create<NotificationState>((set) => ({
-  notifications: [...initialNotifications],
-  unreadCount: initialNotifications.filter((n) => !n.read).length,
+  notifications: [],
+  unreadCount: 0,
 
   markAsRead: (id) =>
     set((state) => {

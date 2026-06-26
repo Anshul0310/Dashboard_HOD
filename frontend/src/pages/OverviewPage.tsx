@@ -181,8 +181,8 @@ export function OverviewPage() {
           ) : (
             <WifiOff size={15} style={{ color: '#d97706' }} />
           )}
-          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: isApiAvailable ? '#15803d' : '#92400e' }}>
-            {isApiAvailable ? 'Live Data — Connected to Server' : 'Demo Mode — Using Sample Data'}
+          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: isApiAvailable ? '#15803d' : '#991b1b' }}>
+            {isApiAvailable ? 'Live Data — Connected to Server' : 'Disconnected from Server'}
           </span>
           {isApiAvailable && (
             <span style={{ fontSize: '0.75rem', color: '#166534', marginLeft: '4px' }}>

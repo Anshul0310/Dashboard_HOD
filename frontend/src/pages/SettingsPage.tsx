@@ -212,8 +212,8 @@ export function SettingsPage() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0' }}>
               <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Backend API</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#ca8a04', background: '#fef9c3', padding: '3px 10px', borderRadius: '999px', border: '1px solid #fde68a' }}>
-                Using Mock Data
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#16a34a', background: '#f0fdf4', padding: '3px 10px', borderRadius: '999px', border: '1px solid #bbf7d0' }}>
+                Connected
               </span>
             </div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-faint)', background: 'var(--bg-surface)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '4px' }}>
