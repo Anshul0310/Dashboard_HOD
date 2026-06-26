@@ -113,8 +113,8 @@ router.get(
       const submission = await prisma.facultyKpiSubmission.findUnique({
         where: {
           periodId_facultyId: {
-            periodId,
-            facultyId: req.user.id,
+            periodId: periodId as string,
+            facultyId: req.user.id as string,
           },
         },
       });
@@ -220,7 +220,7 @@ router.patch(
 
       // Verify the submission exists and belongs to HOD's department
       const submission = await prisma.facultyKpiSubmission.findUnique({
-        where: { id },
+        where: { id: id as string },
       });
 
       if (!submission) {
@@ -239,7 +239,7 @@ router.patch(
       }
 
       const updated = await prisma.facultyKpiSubmission.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           status: action,
           reviewedById: req.user.id,

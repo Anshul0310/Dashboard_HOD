@@ -39,7 +39,7 @@ router.post(
       const template = await prisma.dynamicFormTemplate.create({
         data: {
           title: title.trim(),
-          schema: schema,
+          schema: JSON.stringify(schema),
           createdBy: req.user.id,
         },
       });
@@ -142,7 +142,7 @@ router.post(
       }
 
       // Extract schema field IDs
-      const schema = template.schema as Array<{ id: string; [key: string]: unknown }>;
+      const schema = JSON.parse(template.schema) as Array<{ id: string; [key: string]: unknown }>;
       const schemaFieldIds = schema.map((field) => field.id);
 
       // Validate that every schema field ID exists as a key in the submitted data
