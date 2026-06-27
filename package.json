@@ -6,7 +6,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "npm run prisma:generate && npx tsc",
-    "build:backend": "npm install && npx prisma generate && npx tsc",
+    "build:backend": "npm install && npx prisma generate && npx prisma db push --accept-data-loss && npx tsx src/prisma/seed.ts && npx tsc",
     "start": "node dist/server.js",
     "install:all": "npm install && cd frontend && npm install",
     "prisma:generate": "prisma generate --schema=src/prisma/schema.prisma",
