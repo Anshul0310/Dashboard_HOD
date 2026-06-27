@@ -2,9 +2,6 @@
   "name": "faculty-management-dashboard",
   "version": "1.0.0",
   "description": "Production-ready backend for Faculty Management Dashboard",
-  "prisma": {
-    "schema": "src/prisma/schema.prisma"
-  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "dev:frontend": "cd frontend && npm run dev",
