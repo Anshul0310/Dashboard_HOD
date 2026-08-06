@@ -48,18 +48,8 @@ export interface Department {
 }
 
 export const departments: Department[] = [
-  { id: 'aids', name: 'Artificial Intelligence & Data Science', shortName: 'AI & DS', color: '#6366f1' },
-  { id: 'aiml', name: 'Artificial Intelligence & Machine Learning', shortName: 'AI & ML', color: '#8b5cf6' },
-  { id: 'aero', name: 'Aeronautical Engineering', shortName: 'AERO', color: '#0ea5e9' },
-  { id: 'civil', name: 'Civil Engineering', shortName: 'CIVIL', color: '#84cc16' },
-  { id: 'csbs', name: 'Computer Science & Business Systems', shortName: 'CS & BS', color: '#f97316' },
-  { id: 'cse', name: 'Computer Science & Engineering', shortName: 'CSE', color: '#2563eb' },
-  { id: 'eee', name: 'Electrical & Electronics Engineering', shortName: 'EEE', color: '#eab308' },
-  { id: 'ece', name: 'Electronics & Communication Engineering', shortName: 'ECE', color: '#14b8a6' },
-  { id: 'vlsi', name: 'Electronics Engineering (VLSI Design & Technology)', shortName: 'VLSI', color: '#ec4899' },
-  { id: 'ise', name: 'Information Science & Engineering', shortName: 'ISE', color: '#10b981' },
+  { id: 'csbs', name: 'Computer Science & Business Systems', shortName: 'CSBS', color: '#f97316' },
   { id: 'mech', name: 'Mechanical Engineering', shortName: 'MECH', color: '#64748b' },
-  { id: 'rai', name: 'Robotics and Artificial Intelligence', shortName: 'RAI', color: '#ef4444' },
 ];
 
 interface DeptState {
@@ -69,11 +59,11 @@ interface DeptState {
 }
 
 export const useDeptStore = create<DeptState>((set, get) => ({
-  selectedDeptId: 'cse',
+  selectedDeptId: 'csbs',
   setDept: (id) => set({ selectedDeptId: id }),
   getSelectedDept: () => {
     const id = get().selectedDeptId;
-    return departments.find((d) => d.id === id) ?? departments[5];
+    return departments.find((d) => d.id === id) ?? departments[0];
   },
 }));
 

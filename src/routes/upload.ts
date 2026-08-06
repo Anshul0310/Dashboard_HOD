@@ -9,8 +9,36 @@ import { UploadApiResponse } from "cloudinary";
 
 const router = Router();
 
-// Configure multer with memory storage
-const upload = multer({ storage: multer.memoryStorage() });
+// Allowed MIME types for proof-of-work uploads
+const ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+// Configure multer with memory storage and validation
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          `Invalid file type: ${file.mimetype}. Allowed: Images (JPG, PNG, GIF, WebP), PDF, DOC, DOCX.`
+        )
+      );
+    }
+  },
+});
 
 /**
  * Uploads a buffer to Cloudinary using upload_stream.
@@ -40,12 +68,30 @@ function uploadToCloudinary(buffer: Buffer): Promise<UploadApiResponse> {
 /**
  * POST /api/upload
  * multipart/form-data with field "file".
- * Returns { url: "secure_url_here" }
+ * Validates file type (images, PDF, DOC, DOCX) and size (max 10MB).
+ * Returns { url: "secure_url_here", originalName: "file.pdf", mimeType: "application/pdf", size: 12345 }
  */
 router.post(
   "/",
   auth,
-  upload.single("file"),
+  (req: Request, res: Response, next: Function) => {
+    upload.single("file")(req, res, (err: any) => {
+      if (err instanceof multer.MulterError) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          res.status(400).json({
+            error: `File too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.`,
+          });
+          return;
+        }
+        res.status(400).json({ error: err.message });
+        return;
+      } else if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      next();
+    });
+  },
   async (req: Request, res: Response): Promise<void> => {
     try {
       if (!req.user) {
@@ -81,7 +127,12 @@ router.post(
         url = `${req.protocol}://${req.get("host")}/uploads/${filename}`;
       }
 
-      res.status(200).json({ url });
+      res.status(200).json({
+        url,
+        originalName: req.file.originalname,
+        mimeType: req.file.mimetype,
+        size: req.file.size,
+      });
     } catch (error) {
       console.error("Generic file upload error:", error);
       res.status(500).json({ error: "File upload failed." });

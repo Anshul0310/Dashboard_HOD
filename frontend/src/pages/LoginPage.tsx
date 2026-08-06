@@ -186,10 +186,13 @@ export function LoginPage() {
               Default Credentials
             </p>
             <p style={{ fontSize: '0.73rem', color: '#0c4a6e' }}>
-              Faculty (CSE): <strong>faculty1.cse@nmit.ac.in</strong> / <strong>nmit@2026</strong>
+              Faculty (CSBS): <strong>faculty1.csbs@nmit.ac.in</strong> / <strong>nmit@2026</strong>
             </p>
             <p style={{ fontSize: '0.73rem', color: '#0c4a6e' }}>
-              HOD (CSE): <strong>hod.cse@nmit.ac.in</strong> / <strong>nmit@2026</strong>
+              HOD (CSBS): <strong>hod.csbs@nmit.ac.in</strong> / <strong>nmit@2026</strong>
+            </p>
+            <p style={{ fontSize: '0.73rem', color: '#0c4a6e' }}>
+              HOD (MECH): <strong>hod.mech@nmit.ac.in</strong> / <strong>nmit@2026</strong>
             </p>
             <p style={{ fontSize: '0.73rem', color: '#0c4a6e' }}>
               Dean: <strong>dean@nmit.ac.in</strong> / <strong>nmit@2026</strong>

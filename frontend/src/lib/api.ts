@@ -141,13 +141,37 @@ export async function checkHealth(): Promise<boolean> {
   }
 }
 
-export async function uploadFile(file: File): Promise<{ url: string }> {
+export interface UploadResult {
+  url: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+}
+
+export async function uploadFile(file: File): Promise<UploadResult> {
   const formData = new FormData();
   formData.append('file', file);
-  return apiFetch<{ url: string }>('/upload', {
+  return apiFetch<UploadResult>('/upload', {
     method: 'POST',
     body: formData,
   });
+}
+
+/**
+ * Upload multiple files sequentially via the single-file endpoint.
+ * Returns an array of results. Throws on the first failure.
+ */
+export async function uploadMultipleFiles(
+  files: File[],
+  onProgress?: (completed: number, total: number) => void
+): Promise<UploadResult[]> {
+  const results: UploadResult[] = [];
+  for (let i = 0; i < files.length; i++) {
+    const result = await uploadFile(files[i]);
+    results.push(result);
+    onProgress?.(i + 1, files.length);
+  }
+  return results;
 }
 
 // ─── KPI API ──────────────────────────────────────────────────────────────

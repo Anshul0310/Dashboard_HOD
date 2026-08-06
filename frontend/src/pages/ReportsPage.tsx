@@ -105,7 +105,7 @@ export function ReportsPage() {
           <div className="bg-gradient-primary px-8 py-6 text-white">
             <h2 className="text-lg font-bold">Department KPI Report</h2>
             <p className="text-primary-200 text-sm mt-1">
-              Department of Computer Science — {currentPeriod?.label}
+              Department of {dept.name} — {currentPeriod?.label}
             </p>
             <p className="text-primary-300 text-xs mt-2">
               Generated on {formatDate(new Date().toISOString())} | Data updated: {formatDate(submission.lastUpdated)}
