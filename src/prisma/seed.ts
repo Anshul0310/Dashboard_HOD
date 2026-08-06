@@ -231,7 +231,7 @@ function pickRandom<T>(arr: T[]): T {
 function generatePeriodIds(): string[] {
   const now = new Date();
   const periods: string[] = [];
-  for (let i = 3; i >= 0; i--) {
+  for (let i = 2; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const month = d.getMonth() + 1;
     const year = d.getFullYear();

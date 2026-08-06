@@ -113,6 +113,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, loginError: null });
     try {
       const result = await apiLogin(email, password);
+      // Auto-set department store to the logged-in user's department
+      useDeptStore.getState().setDept(result.user.department);
       set({
         role: mapRole(result.user.role),
         token: result.token,
