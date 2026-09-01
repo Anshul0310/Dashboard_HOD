@@ -12,6 +12,7 @@ import {
   ChevronRight,
   X,
   LogOut,
+  Building2,
 } from 'lucide-react';
 import { useAuthStore } from '../../lib/store';
 import { useNotificationStore } from '../../lib/store';
@@ -25,16 +26,17 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { path: '/overview', label: 'Overview', icon: LayoutDashboard, roles: ['hod', 'management', 'faculty'], color: '#2563eb' },
+  { path: '/overview', label: 'Overview', icon: LayoutDashboard, roles: ['hod', 'management', 'faculty', 'college_admin'], color: '#2563eb' },
+  { path: '/college-dashboard', label: 'College Dashboard', icon: Building2, roles: ['college_admin'], color: '#6d28d9' },
   { path: '/my-kpi', label: 'My KPI Entry', icon: ClipboardEdit, roles: ['faculty'], color: '#7c3aed' },
   { path: '/kpi-entry', label: 'Department KPI', icon: ClipboardEdit, roles: ['hod'], color: '#7c3aed' },
   { path: '/review', label: 'Review Submissions', icon: Users, roles: ['hod'], color: '#059669' },
-  { path: '/faculty', label: 'Faculty', icon: Users, roles: ['hod', 'management'], color: '#0891b2' },
-  { path: '/publications', label: 'Publications & Research', icon: BookOpen, roles: ['hod', 'management', 'faculty'], color: '#059669' },
-  { path: '/placements', label: 'Placements', icon: Briefcase, roles: ['hod', 'management'], color: '#d97706' },
-  { path: '/reports', label: 'Reports', icon: FileBarChart, roles: ['hod', 'management'], color: '#dc2626' },
-  { path: '/notifications', label: 'Notifications', icon: Bell, roles: ['hod', 'management', 'faculty'], color: '#7c3aed' },
-  { path: '/settings', label: 'Settings', icon: Settings, roles: ['hod', 'management', 'faculty'], color: '#64748b' },
+  { path: '/faculty', label: 'Faculty', icon: Users, roles: ['hod', 'management', 'college_admin'], color: '#0891b2' },
+  { path: '/publications', label: 'Publications & Research', icon: BookOpen, roles: ['hod', 'management', 'faculty', 'college_admin'], color: '#059669' },
+  { path: '/placements', label: 'Placements', icon: Briefcase, roles: ['hod', 'management', 'college_admin'], color: '#d97706' },
+  { path: '/reports', label: 'Reports', icon: FileBarChart, roles: ['hod', 'management', 'college_admin'], color: '#dc2626' },
+  { path: '/notifications', label: 'Notifications', icon: Bell, roles: ['hod', 'management', 'faculty', 'college_admin'], color: '#7c3aed' },
+  { path: '/settings', label: 'Settings', icon: Settings, roles: ['hod', 'management', 'faculty', 'college_admin'], color: '#64748b' },
 ];
 
 export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
@@ -137,12 +139,12 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             gap: '8px',
             padding: '8px 12px',
             borderRadius: '8px',
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-color)',
+            background: role === 'college_admin' ? '#6d28d915' : 'var(--bg-surface)',
+            border: role === 'college_admin' ? '1px solid #6d28d930' : '1px solid var(--border-color)',
           }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: dept.color, flexShrink: 0 }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-              {dept.shortName}
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: role === 'college_admin' ? '#6d28d9' : dept.color, flexShrink: 0 }} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: role === 'college_admin' ? '#6d28d9' : 'var(--text-secondary)', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+              {role === 'college_admin' ? 'All Departments' : dept.shortName}
             </span>
           </div>
         </div>

@@ -12,6 +12,7 @@ interface TopBarProps {
 
 const routeLabels: Record<string, string> = {
   '/overview': 'Overview',
+  '/college-dashboard': 'College Dashboard',
   '/kpi-entry': 'KPI Data Entry',
   '/faculty': 'Faculty',
   '/publications': 'Publications & Research',
@@ -48,9 +49,9 @@ export function TopBar({ onMenuClick }: TopBarProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const roleLabel = role === 'hod' ? 'HOD' : 'Management';
-  const roleColor = role === 'hod' ? '#2563eb' : '#7c3aed';
-  const roleBg = role === 'hod' ? '#dbeafe' : '#ede9fe';
+  const roleLabel = role === 'hod' ? 'HOD' : role === 'college_admin' ? 'College Admin' : 'Management';
+  const roleColor = role === 'hod' ? '#2563eb' : role === 'college_admin' ? '#6d28d9' : '#7c3aed';
+  const roleBg = role === 'hod' ? '#dbeafe' : role === 'college_admin' ? '#ede9fe' : '#ede9fe';
 
   const recentNotifs = notifications.slice(0, 6);
 
@@ -248,7 +249,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             fontWeight: 800,
             flexShrink: 0,
           }}>
-            {role === 'hod' ? 'HD' : 'MG'}
+            {role === 'hod' ? 'HD' : role === 'college_admin' ? 'CA' : 'MG'}
           </div>
           <span style={{ fontSize: '0.8rem', fontWeight: 600, color: roleColor, whiteSpace: 'nowrap' }}>
             {roleLabel}

@@ -44,16 +44,24 @@ router.get(
         return;
       }
 
-      const department = (typeof req.query.department === 'string' ? req.query.department : undefined) || req.user.department;
+      const departmentQuery = typeof req.query.department === 'string' ? req.query.department : undefined;
 
-      // HOD can only access their own department
-      if (req.user.role === "HOD" && department !== req.user.department) {
+      // COLLEGE_ADMIN and MANAGEMENT can access any department; HOD only their own
+      if (req.user.role === "HOD" && departmentQuery && departmentQuery !== req.user.department) {
+        res.status(403).json({ error: "You can only access your own department." });
+        return;
+      }
+      if (req.user.role === "FACULTY" && departmentQuery && departmentQuery !== req.user.department) {
         res.status(403).json({ error: "You can only access your own department." });
         return;
       }
 
+      // For COLLEGE_ADMIN/MANAGEMENT without a department filter, fetch all
+      const isAdminRole = req.user.role === "MANAGEMENT" || req.user.role === "COLLEGE_ADMIN";
+      const department = departmentQuery || (isAdminRole ? undefined : req.user.department);
+
       const submissions = await prisma.kpiSubmission.findMany({
-        where: { department },
+        where: department ? { department } : {},
         orderBy: { periodId: "desc" },
         include: {
           submittedBy: {
@@ -96,7 +104,8 @@ router.get(
       const periodId = Array.isArray(rawPeriodId) ? rawPeriodId[0] : rawPeriodId;
       const department = (typeof req.query.department === 'string' ? req.query.department : undefined) || req.user.department;
 
-      if (req.user.role === "HOD" && department !== req.user.department) {
+      // COLLEGE_ADMIN and MANAGEMENT can access any department
+      if (req.user.role !== "MANAGEMENT" && req.user.role !== "COLLEGE_ADMIN" && department !== req.user.department) {
         res.status(403).json({ error: "You can only access your own department." });
         return;
       }
@@ -348,6 +357,100 @@ router.get(
       });
     } catch (error) {
       console.error("Dashboard overview error:", error);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  }
+);
+
+/**
+ * GET /api/kpi/dashboard/college-overview
+ * Returns aggregated stats from ALL departments for the College Admin dashboard.
+ * Accessible by COLLEGE_ADMIN and MANAGEMENT roles.
+ */
+router.get(
+  "/dashboard/college-overview",
+  auth,
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: "Authentication required." });
+        return;
+      }
+
+      if (req.user.role !== "COLLEGE_ADMIN" && req.user.role !== "MANAGEMENT") {
+        res.status(403).json({ error: "Forbidden. College Admin or Management role required." });
+        return;
+      }
+
+      // Fetch all departments that have submissions
+      const allDepartments = await prisma.kpiSubmission.findMany({
+        select: { department: true },
+        distinct: ["department"],
+      });
+
+      // Fetch latest period submissions for each department
+      const latestSubmissions = await prisma.kpiSubmission.findMany({
+        orderBy: { periodId: "desc" },
+        include: {
+          submittedBy: {
+            select: { id: true, name: true, email: true },
+          },
+        },
+      });
+
+      // Parse JSON strings
+      const parsed = latestSubmissions.map((s) => ({
+        ...s,
+        data: JSON.parse(s.data),
+        sectionStatuses: JSON.parse(s.sectionStatuses),
+      }));
+
+      // Group by department
+      const byDepartment: Record<string, typeof parsed> = {};
+      for (const sub of parsed) {
+        if (!byDepartment[sub.department]) {
+          byDepartment[sub.department] = [];
+        }
+        byDepartment[sub.department].push(sub);
+      }
+
+      // Get latest submission per department (most recent period)
+      const latestPerDept: Record<string, (typeof parsed)[0]> = {};
+      for (const [dept, subs] of Object.entries(byDepartment)) {
+        latestPerDept[dept] = subs[0]; // Already sorted desc by periodId
+      }
+
+      // Faculty count per department
+      const facultyCounts = await prisma.user.groupBy({
+        by: ["department"],
+        where: { role: { in: ["FACULTY", "HOD"] } },
+        _count: true,
+      });
+
+      // Faculty KPI submission stats per department
+      const facultyKpiStats = await prisma.facultyKpiSubmission.groupBy({
+        by: ["department", "status"],
+        _count: true,
+      });
+
+      res.json({
+        departments: allDepartments.map((d) => d.department),
+        latestPerDept,
+        allSubmissions: parsed,
+        facultyCounts: facultyCounts.map((fc) => ({
+          department: fc.department,
+          count: fc._count,
+        })),
+        facultyKpiStats: facultyKpiStats.map((s) => ({
+          department: s.department,
+          status: s.status,
+          count: s._count,
+        })),
+        totalDepartments: allDepartments.length,
+        totalSubmissions: latestSubmissions.length,
+      });
+    } catch (error) {
+      console.error("College overview error:", error);
       res.status(500).json({ error: "Internal server error." });
     }
   }

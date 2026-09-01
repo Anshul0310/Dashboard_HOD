@@ -456,6 +456,18 @@ async function main() {
   });
   console.log(`\n  ✅ MANAGEMENT: ${managementUser.email}`);
 
+  // Create College Admin user
+  const collegeAdminUser = await prisma.user.create({
+    data: {
+      email: "collegeadmin@nmit.ac.in",
+      name: "College Admin - NMIT",
+      passwordHash,
+      role: "COLLEGE_ADMIN",
+      department: "admin",
+    },
+  });
+  console.log(`  ✅ COLLEGE_ADMIN: ${collegeAdminUser.email}`);
+
   // ──────────────── Create Department-Level KPI Submissions ────────────────
 
   console.log("\n📊 Creating department KPI submissions...\n");
@@ -575,6 +587,7 @@ async function main() {
   console.log(`  Faculty 1 (CSBS): faculty1.csbs@nmit.ac.in  / ${DEFAULT_PASSWORD}`);
   console.log(`  Faculty 1 (MECH): faculty1.mech@nmit.ac.in  / ${DEFAULT_PASSWORD}`);
   console.log(`  Dean:            dean@nmit.ac.in            / ${DEFAULT_PASSWORD}`);
+  console.log(`  College Admin:   collegeadmin@nmit.ac.in     / ${DEFAULT_PASSWORD}`);
   console.log("──────────────────────────────────────────────\n");
 }
 

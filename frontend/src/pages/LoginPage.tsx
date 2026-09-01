@@ -24,9 +24,11 @@ export function LoginPage() {
     restoreSession();
   }, [restoreSession]);
 
-  // Redirect if already authenticated
+  // Auto-redirect if already logged in
   useEffect(() => {
-    if (role) {
+    if (role === 'college_admin') {
+      navigate('/college-dashboard');
+    } else if (role) {
       navigate('/overview');
     }
   }, [role, navigate]);
@@ -40,11 +42,15 @@ export function LoginPage() {
     })();
   }, [checkApiHealth]);
 
-  const handleCredentialLogin = async (e: React.FormEvent) => {
+    const handleCredentialLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginWithCredentials(email, password);
-      navigate('/overview');
+      const result = await loginWithCredentials(email, password);
+      if (result.user.role === 'COLLEGE_ADMIN') {
+        navigate('/college-dashboard');
+      } else {
+        navigate('/overview');
+      }
     } catch {
       // Error is set in the store
     }
@@ -196,6 +202,9 @@ export function LoginPage() {
             </p>
             <p style={{ fontSize: '0.73rem', color: '#0c4a6e' }}>
               Dean: <strong>dean@nmit.ac.in</strong> / <strong>nmit@2026</strong>
+            </p>
+            <p style={{ fontSize: '0.73rem', color: '#0c4a6e' }}>
+              College Admin: <strong>collegeadmin@nmit.ac.in</strong> / <strong>nmit@2026</strong>
             </p>
           </div>
         )}

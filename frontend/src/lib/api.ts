@@ -298,3 +298,25 @@ export async function reviewFacultyKpiSubmission(
   });
 }
 
+// ─── College Admin API ────────────────────────────────────────────────────
+
+export interface CollegeOverviewResponse {
+  departments: string[];
+  latestPerDept: Record<string, ApiKpiSubmission>;
+  allSubmissions: ApiKpiSubmission[];
+  facultyCounts: { department: string; count: number }[];
+  facultyKpiStats: { department: string; status: string; count: number }[];
+  totalDepartments: number;
+  totalSubmissions: number;
+}
+
+/** Fetch aggregated college-wide overview (COLLEGE_ADMIN / MANAGEMENT only) */
+export async function fetchCollegeOverview(): Promise<CollegeOverviewResponse> {
+  return apiFetch<CollegeOverviewResponse>('/kpi/dashboard/college-overview');
+}
+
+/** Fetch KPI submissions for all departments */
+export async function fetchAllDepartmentSubmissions(): Promise<ApiKpiSubmission[]> {
+  return apiFetch<ApiKpiSubmission[]>('/kpi/submissions');
+}
+

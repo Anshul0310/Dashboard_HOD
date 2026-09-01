@@ -50,6 +50,7 @@ export interface Department {
 export const departments: Department[] = [
   { id: 'csbs', name: 'Computer Science & Business Systems', shortName: 'CSBS', color: '#f97316' },
   { id: 'mech', name: 'Mechanical Engineering', shortName: 'MECH', color: '#64748b' },
+  { id: 'admin', name: 'All Departments', shortName: 'ALL', color: '#6d28d9' },
 ];
 
 interface DeptState {
@@ -92,6 +93,8 @@ function mapRole(backendRole: string): UserRole {
       return 'hod';
     case 'MANAGEMENT':
       return 'management';
+    case 'COLLEGE_ADMIN':
+      return 'college_admin';
     case 'FACULTY':
       return 'faculty';
     default:
@@ -114,7 +117,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const result = await apiLogin(email, password);
       // Auto-set department store to the logged-in user's department
-      useDeptStore.getState().setDept(result.user.department);
+      // For admin-level roles (COLLEGE_ADMIN, MANAGEMENT), default to first real department
+      if (result.user.department === 'admin' || result.user.department === 'management') {
+        useDeptStore.getState().setDept('csbs');
+      } else {
+        useDeptStore.getState().setDept(result.user.department);
+      }
       set({
         role: mapRole(result.user.role),
         token: result.token,

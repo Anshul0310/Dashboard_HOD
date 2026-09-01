@@ -13,6 +13,7 @@ import { PlacementsPage } from './pages/PlacementsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { CollegeDashboardPage } from './pages/CollegeDashboardPage';
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const role = useAuthStore((s) => s.role);
@@ -36,6 +37,14 @@ function App() {
           }
         >
           <Route path="/overview" element={<OverviewPage />} />
+          <Route
+            path="/college-dashboard"
+            element={
+              <RoleGate allowedRoles={['college_admin']}>
+                <CollegeDashboardPage />
+              </RoleGate>
+            }
+          />
           <Route
             path="/my-kpi"
             element={

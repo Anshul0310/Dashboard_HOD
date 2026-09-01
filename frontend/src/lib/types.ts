@@ -1,5 +1,5 @@
 // ─── Role & Auth ───────────────────────────────────────────────────────────
-export type UserRole = 'hod' | 'management' | 'faculty';
+export type UserRole = 'hod' | 'management' | 'faculty' | 'college_admin';
 
 // ─── Period ────────────────────────────────────────────────────────────────
 export interface KpiPeriod {

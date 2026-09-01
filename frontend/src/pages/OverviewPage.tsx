@@ -67,9 +67,9 @@ export function OverviewPage() {
   useEffect(() => {
     if (isApiAvailable && user) {
       loadPeriodsFromApi();
-      loadSubmissionsFromApi(user.department);
+      loadSubmissionsFromApi(dept.id);
     }
-  }, [isApiAvailable, user, loadPeriodsFromApi, loadSubmissionsFromApi]);
+  }, [isApiAvailable, user, dept.id, loadPeriodsFromApi, loadSubmissionsFromApi]);
 
   const [refreshing, setRefreshing] = useState(false);
   const handleRefresh = async () => {

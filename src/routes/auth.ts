@@ -152,7 +152,7 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const validRoles = ["HOD", "FACULTY", "MANAGEMENT"];
+    const validRoles = ["HOD", "FACULTY", "MANAGEMENT", "COLLEGE_ADMIN"];
     const userRole = validRoles.includes(role) ? role : "FACULTY";
 
     const passwordHash = await bcrypt.hash(password, 10);
