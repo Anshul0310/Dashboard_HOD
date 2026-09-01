@@ -13,13 +13,11 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  ChevronDown,
   BarChart3,
   Loader2,
 } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { fetchCollegeOverview, type CollegeOverviewResponse } from '../lib/api';
-import { departments as deptList } from '../lib/store';
 import { KpiReportEmbed } from '../components/powerbi/KpiReportEmbed';
 import { useKpiStore } from '../lib/store';
 

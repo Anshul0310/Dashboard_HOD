@@ -45,8 +45,10 @@ export function LoginPage() {
     const handleCredentialLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await loginWithCredentials(email, password);
-      if (result.user.role === 'COLLEGE_ADMIN') {
+      await loginWithCredentials(email, password);
+      // Role is already set in the store by loginWithCredentials
+      const updatedRole = useAuthStore.getState().role;
+      if (updatedRole === 'college_admin') {
         navigate('/college-dashboard');
       } else {
         navigate('/overview');
