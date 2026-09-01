@@ -27,7 +27,7 @@ interface SidebarProps {
 
 const navItems = [
   { path: '/overview', label: 'Overview', icon: LayoutDashboard, roles: ['hod', 'management', 'faculty', 'college_admin'], color: '#2563eb' },
-  { path: '/college-dashboard', label: 'College Dashboard', icon: Building2, roles: ['college_admin'], color: '#6d28d9' },
+  { path: '/college-dashboard', label: 'College Dashboard', icon: Building2, roles: ['college_admin', 'management'], color: '#6d28d9' },
   { path: '/my-kpi', label: 'My KPI Entry', icon: ClipboardEdit, roles: ['faculty'], color: '#7c3aed' },
   { path: '/kpi-entry', label: 'Department KPI', icon: ClipboardEdit, roles: ['hod'], color: '#7c3aed' },
   { path: '/review', label: 'Review Submissions', icon: Users, roles: ['hod'], color: '#059669' },
@@ -139,12 +139,12 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             gap: '8px',
             padding: '8px 12px',
             borderRadius: '8px',
-            background: role === 'college_admin' ? '#6d28d915' : 'var(--bg-surface)',
-            border: role === 'college_admin' ? '1px solid #6d28d930' : '1px solid var(--border-color)',
+            background: (role === 'college_admin' || role === 'management') ? '#6d28d915' : 'var(--bg-surface)',
+            border: (role === 'college_admin' || role === 'management') ? '1px solid #6d28d930' : '1px solid var(--border-color)',
           }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: role === 'college_admin' ? '#6d28d9' : dept.color, flexShrink: 0 }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: role === 'college_admin' ? '#6d28d9' : 'var(--text-secondary)', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-              {role === 'college_admin' ? 'All Departments' : dept.shortName}
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: (role === 'college_admin' || role === 'management') ? '#6d28d9' : dept.color, flexShrink: 0 }} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: (role === 'college_admin' || role === 'management') ? '#6d28d9' : 'var(--text-secondary)', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+              {role === 'college_admin' ? 'College Admin' : role === 'management' ? 'Dean' : dept.shortName}
             </span>
           </div>
         </div>

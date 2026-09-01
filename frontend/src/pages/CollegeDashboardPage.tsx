@@ -179,7 +179,7 @@ export function CollegeDashboardPage() {
       const data = await fetchCollegeOverview();
       setOverview(data);
     } catch (err) {
-      setError('Failed to load college overview data. Ensure you are logged in as College Admin.');
+      setError('Failed to load college overview data. Ensure you are logged in as College Admin or Dean.');
       console.error(err);
     } finally {
       setLoading(false);

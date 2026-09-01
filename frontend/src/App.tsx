@@ -40,7 +40,7 @@ function App() {
           <Route
             path="/college-dashboard"
             element={
-              <RoleGate allowedRoles={['college_admin']}>
+              <RoleGate allowedRoles={['college_admin', 'management']}>
                 <CollegeDashboardPage />
               </RoleGate>
             }

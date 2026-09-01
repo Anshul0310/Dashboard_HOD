@@ -49,9 +49,9 @@ export function TopBar({ onMenuClick }: TopBarProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const roleLabel = role === 'hod' ? 'HOD' : role === 'college_admin' ? 'College Admin' : 'Management';
-  const roleColor = role === 'hod' ? '#2563eb' : role === 'college_admin' ? '#6d28d9' : '#7c3aed';
-  const roleBg = role === 'hod' ? '#dbeafe' : role === 'college_admin' ? '#ede9fe' : '#ede9fe';
+  const roleLabel = role === 'hod' ? 'HOD' : role === 'college_admin' ? 'College Admin' : role === 'management' ? 'Dean' : 'Faculty';
+  const roleColor = role === 'hod' ? '#2563eb' : role === 'college_admin' ? '#6d28d9' : role === 'management' ? '#7c3aed' : '#059669';
+  const roleBg = role === 'hod' ? '#dbeafe' : role === 'college_admin' ? '#ede9fe' : role === 'management' ? '#ede9fe' : '#ecfdf5';
 
   const recentNotifs = notifications.slice(0, 6);
 
@@ -89,24 +89,44 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         <nav style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.875rem', overflow: 'hidden' }}>
           <span style={{ color: '#94a3b8', whiteSpace: 'nowrap' }}>NMIT</span>
           <ChevronRight size={14} style={{ color: '#cbd5e1', flexShrink: 0 }} />
-          {/* Department pill */}
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '5px',
-            padding: '3px 10px',
-            borderRadius: '999px',
-            background: `${dept.color}15`,
-            color: dept.color,
-            fontSize: '0.78rem',
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-            border: `1px solid ${dept.color}30`,
-            flexShrink: 0,
-          }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: dept.color, display: 'inline-block' }} />
-            {dept.shortName}
-          </span>
+          {/* Department/Role pill — for dean/college_admin show role, otherwise show department */}
+          {(role === 'college_admin' || role === 'management') ? (
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '3px 10px',
+              borderRadius: '999px',
+              background: role === 'college_admin' ? '#6d28d915' : '#7c3aed15',
+              color: role === 'college_admin' ? '#6d28d9' : '#7c3aed',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              border: `1px solid ${role === 'college_admin' ? '#6d28d930' : '#7c3aed30'}`,
+              flexShrink: 0,
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: role === 'college_admin' ? '#6d28d9' : '#7c3aed', display: 'inline-block' }} />
+              {role === 'college_admin' ? 'College Admin' : 'Dean'}
+            </span>
+          ) : (
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '3px 10px',
+              borderRadius: '999px',
+              background: `${dept.color}15`,
+              color: dept.color,
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              border: `1px solid ${dept.color}30`,
+              flexShrink: 0,
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: dept.color, display: 'inline-block' }} />
+              {dept.shortName}
+            </span>
+          )}
           <ChevronRight size={14} style={{ color: '#cbd5e1', flexShrink: 0 }} />
           <span style={{ fontWeight: 600, color: '#1e293b', whiteSpace: 'nowrap' }}>{currentLabel}</span>
         </nav>
@@ -249,7 +269,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             fontWeight: 800,
             flexShrink: 0,
           }}>
-            {role === 'hod' ? 'HD' : role === 'college_admin' ? 'CA' : 'MG'}
+            {role === 'hod' ? 'HD' : role === 'college_admin' ? 'CA' : role === 'management' ? 'DN' : 'FC'}
           </div>
           <span style={{ fontSize: '0.8rem', fontWeight: 600, color: roleColor, whiteSpace: 'nowrap' }}>
             {roleLabel}
